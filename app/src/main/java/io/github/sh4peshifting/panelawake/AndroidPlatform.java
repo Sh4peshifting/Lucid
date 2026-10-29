@@ -1,5 +1,6 @@
 package io.github.sh4peshifting.panelawake;
 
+import android.annotation.SuppressLint;
 import android.os.IBinder;
 
 import java.io.ByteArrayOutputStream;
@@ -13,6 +14,11 @@ import java.util.concurrent.TimeUnit;
 
 /** Runs only inside the Shizuku shell/root UserService, never in the app process. */
 public final class AndroidPlatform implements PowerController.Platform {
+    public AndroidPlatform() {
+        int uid = android.os.Process.myUid();
+        if (uid != 0 && uid != 2000) throw new SecurityException("电源接口只允许在 Shizuku 的 shell/root 进程中运行");
+    }
+
     private static final ExecutorService READERS = Executors.newCachedThreadPool(r -> {
         Thread t = new Thread(r, "command-output"); t.setDaemon(true); return t;
     });
@@ -40,6 +46,9 @@ public final class AndroidPlatform implements PowerController.Platform {
         Thread.sleep(700);
     }
 
+    // Shizuku UserService is a shell/root app_process, exempt from app hidden-API restrictions.
+    // The constructor rejects ordinary app UIDs; never move this operation into the Activity.
+    @SuppressLint({"BlockedPrivateApi", "SoonBlockedPrivateApi", "PrivateApi"})
     @Override public void setPanelPower(boolean on, String physicalId) throws Exception {
         Class<?> surface = Class.forName("android.view.SurfaceControl");
         Class<?> tokens = surface;
