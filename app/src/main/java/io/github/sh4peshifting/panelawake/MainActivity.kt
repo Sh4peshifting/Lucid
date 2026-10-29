@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.getValue
 
@@ -15,6 +16,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             val model: LucidViewModel = viewModel()
             val state by model.state.collectAsStateWithLifecycle()
+            LifecycleStartEffect(model) {
+                model.setScreenVisible(true)
+                onStopOrDispose { model.setScreenVisible(false) }
+            }
             LucidTheme {
                 LucidScreen(state, model::requestConnection, model::setKeepAwake, model::setPanelOff, model::restore)
             }

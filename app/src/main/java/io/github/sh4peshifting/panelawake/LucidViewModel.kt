@@ -53,6 +53,7 @@ class LucidViewModel(application: Application) : AndroidViewModel(application) {
     private var remote: IPowerService? = null
     private var bound = false
     private var cleared = false
+    private var screenVisible = false
     private val serviceArgs = Shizuku.UserServiceArgs(ComponentName(application, PowerUserService::class.java))
         .tag("panel-awake").daemon(true).processNameSuffix("guardian")
         .debuggable(BuildConfig.DEBUG).version(BuildConfig.VERSION_CODE)
@@ -90,10 +91,14 @@ class LucidViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             while (isActive) {
                 delay(2000)
-                if (remote != null && !mutableState.value.busy && !requests.isLocked) invoke(persist = false, busy = false) { it.status }
+                if (screenVisible && remote != null && !mutableState.value.busy && !requests.isLocked) {
+                    invoke(persist = false, busy = false) { it.status }
+                }
             }
         }
     }
+
+    fun setScreenVisible(visible: Boolean) { screenVisible = visible }
 
     fun requestConnection() {
         try {
