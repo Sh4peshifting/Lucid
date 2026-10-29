@@ -52,7 +52,7 @@ public final class PowerController {
     public synchronized void setPanelOff(boolean enabled) {
         error = "";
         try {
-            state = platform.read();
+            state = observe();
             // A fresh physical id prevents applying a stale token after display changes.
             platform.setPanelPower(!enabled, state.physicalId());
             panelOff = enabled;
@@ -62,7 +62,7 @@ public final class PowerController {
 
     public synchronized void tick() {
         try {
-            StatusParser.State before = platform.read();
+            StatusParser.State before = observe();
             state = before;
             boolean changed = false;
             if (keepAwake) {
@@ -79,20 +79,23 @@ public final class PowerController {
                 platform.setPanelPower(false, before.physicalId());
                 changed = true;
             }
-            if (changed) state = platform.read();
+            if (changed) state = observe();
             updatedAt = System.currentTimeMillis();
             error = "";
         } catch (Exception e) { error = describe(e); }
     }
 
     public synchronized void refresh() {
-        try { state = platform.read(); updatedAt = System.currentTimeMillis(); }
+        try { state = observe(); updatedAt = System.currentTimeMillis(); }
         catch (Exception e) { error = describe(e); }
     }
 
     public synchronized void restore() {
+        String failures = "";
         if (panelOff) setPanelOff(false);
+        if (!error.isEmpty()) failures = error;
         if (keepAwake) setKeepAwake(false, -1);
+        if (!failures.isEmpty()) error = failures + (error.isEmpty() ? "" : "\n" + error);
     }
 
     public synchronized StatusParser.State state() { return state; }
@@ -101,6 +104,15 @@ public final class PowerController {
     public synchronized int restoreSetting() { return restoreSetting; }
     public synchronized String error() { return error; }
     public synchronized long updatedAt() { return updatedAt; }
+
+    private StatusParser.State observe() throws Exception {
+        try { return platform.read(); }
+        catch (Exception e) {
+            state = new StatusParser.State("Unknown", null, -1, "", -1);
+            updatedAt = 0;
+            throw e;
+        }
+    }
 
     private static String describe(Exception e) {
         Throwable cause = e;

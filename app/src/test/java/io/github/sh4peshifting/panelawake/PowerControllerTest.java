@@ -6,9 +6,12 @@ import static org.junit.Assert.*;
 public class PowerControllerTest {
     static final class FakePlatform implements PowerController.Platform {
         int stay, mode = 2, wakes, panelWrites;
-        boolean powered = true, failWrite, failPanel;
+        boolean powered = true, failWrite, failPanel, failRead;
         String wake = "Awake";
-        @Override public StatusParser.State read() { return new StatusParser.State(wake, powered, stay, "1", mode); }
+        @Override public StatusParser.State read() throws Exception {
+            if (failRead) throw new Exception("cannot read status");
+            return new StatusParser.State(wake, powered, stay, "1", mode);
+        }
         @Override public int readStay() { return stay; }
         @Override public void writeStay(int value) throws Exception {
             if (failWrite) throw new Exception("denied");
@@ -71,5 +74,19 @@ public class PowerControllerTest {
         c.initialize(true, true, -1); c.restore(); c.tick();
         assertEquals(0, p.stay); assertEquals(2, p.mode);
         assertFalse(c.keepsAwake()); assertFalse(c.keepsPanelOff());
+    }
+    @Test public void readFailureInvalidatesPreviouslyObservedStatus() {
+        FakePlatform p = new FakePlatform(); PowerController c = new PowerController(p);
+        c.initialize(false, false, -1); assertTrue(c.state().awake());
+        p.failRead = true; c.tick();
+        assertEquals("Unknown", c.state().wakefulness());
+        assertEquals(-1, c.state().panelMode()); assertEquals(0, c.updatedAt());
+        assertTrue(c.error().contains("cannot read status"));
+    }
+    @Test public void restoreDoesNotHideAFailedPanelRestore() {
+        FakePlatform p = new FakePlatform(); PowerController c = new PowerController(p);
+        c.initialize(true, true, -1); p.failPanel = true; c.restore();
+        assertTrue(c.keepsPanelOff()); assertFalse(c.keepsAwake());
+        assertTrue(c.error().contains("panel denied"));
     }
 }
