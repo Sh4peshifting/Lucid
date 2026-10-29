@@ -20,7 +20,7 @@ public final class StatusParser {
         List<Panel> panels = new ArrayList<>();
         Panel current = null;
         for (String line : surface.split("\\R")) {
-            Matcher header = Pattern.compile("DisplayDevice\\{(\\d+),([^}]*)}").matcher(line);
+            Matcher header = Pattern.compile("DisplayDevice\\{(\\d+),([^}]*)\\}").matcher(line);
             if (header.find()) {
                 current = null;
                 String flags = header.group(2).toLowerCase(java.util.Locale.ROOT);
