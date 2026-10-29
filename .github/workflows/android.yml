@@ -47,9 +47,9 @@ jobs:
         if: env.ANDROID_KEYSTORE_PATH != ''
         run: |
           mkdir -p dist
-          cp app/build/outputs/apk/release/app-release.apk dist/panel-awake-v0.1.0.apk
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs dist/panel-awake-v0.1.0.apk > dist/SIGNING-CERTIFICATE.txt
-          (cd dist && sha256sum panel-awake-v0.1.0.apk > SHA256SUMS.txt)
+          cp app/build/outputs/apk/release/app-release.apk dist/lucid-v0.2.0.apk
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs dist/lucid-v0.2.0.apk > dist/SIGNING-CERTIFICATE.txt
+          (cd dist && sha256sum lucid-v0.2.0.apk > SHA256SUMS.txt)
       - name: Upload signed release candidate
         if: env.ANDROID_KEYSTORE_PATH != ''
         uses: actions/upload-artifact@v4
@@ -115,7 +115,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          test "$GITHUB_REF_NAME" = 'v0.1.0'
+          test "$GITHUB_REF_NAME" = 'v0.2.0'
           gh release create "$GITHUB_REF_NAME" dist/* \
-            --verify-tag --prerelease --title 'Panel Awake v0.1.0' \
-            --notes-file docs/releases/v0.1.0.md
+            --verify-tag --prerelease --title 'Lucid v0.2.0 · 清醒梦' \
+            --notes-file docs/releases/v0.2.0.md

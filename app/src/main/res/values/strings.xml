@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Panel Awake</string>
-    <style name="AppTheme" parent="android:style/Theme.Material.NoActionBar">
+    <string name="app_name">Lucid</string>
+    <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>
-        <item name="android:colorAccent">#66E3C4</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:colorAccent">#6750A4</item>
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowBackground">#0C1420</item>
+        <item name="android:windowBackground">#FFFBFE</item>
     </style>
 </resources>
