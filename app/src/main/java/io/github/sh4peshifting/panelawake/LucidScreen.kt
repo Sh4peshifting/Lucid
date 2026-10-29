@@ -41,7 +41,7 @@ fun LucidScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(insets).testTag("lucid_list"),
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -158,7 +158,7 @@ private fun StateTile(title: String, value: String, glyph: String, active: Boole
     val colors = MaterialTheme.colorScheme
     Card(modifier = modifier, shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = if (active) colors.primaryContainer else colors.surfaceContainerLow)) {
-        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Glyph(glyph, if (active) colors.onPrimaryContainer else colors.onSurfaceVariant, Modifier.size(24.dp))
             Text(title, style = MaterialTheme.typography.labelMedium, color = colors.onSurfaceVariant)
             Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Medium)
@@ -170,7 +170,7 @@ private fun StateTile(title: String, value: String, glyph: String, active: Boole
 private fun ControlRow(title: String, description: String, glyph: String, checked: Boolean, enabled: Boolean,
                        onCheckedChange: (Boolean) -> Unit, tag: String) {
     val colors = MaterialTheme.colorScheme
-    Row(Modifier.fillMaxWidth().testTag(tag).toggleable(checked, enabled, Role.Switch, onCheckedChange).padding(20.dp),
+    Row(Modifier.fillMaxWidth().testTag(tag).toggleable(checked, enabled, Role.Switch, onCheckedChange).padding(16.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
         Glyph(glyph, colors.primary, Modifier.size(24.dp))
         Column(Modifier.weight(1f)) {

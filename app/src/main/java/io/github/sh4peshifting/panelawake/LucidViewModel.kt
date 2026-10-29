@@ -12,6 +12,7 @@ import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -165,6 +166,8 @@ class LucidViewModel(application: Application) : AndroidViewModel(application) {
                         restoreSetting = result.getInt("restoreSetting", -1), updatedAt = result.getLong("updatedAt"),
                         uid = result.getInt("uid", -1), error = result.getString("error", ""),
                     )
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     if (remote === service) disconnect("服务不可用：${e.message}")
                 }

@@ -16,7 +16,8 @@ import java.io.File
 
 class LucidScreenTest {
     @get:Rule val compose = createComposeRule()
-    private val connected = LucidUiState(connected = true, wakefulness = "Awake", panelMode = 0, powered = true, uid = 2000)
+    private val connected = LucidUiState(connected = true, wakefulness = "Awake", panelMode = 0, powered = true, uid = 2000,
+        updatedAt = 1_793_283_600_000L)
 
     @Test fun switchesOperateIndependently() {
         val state = mutableStateOf(connected)
