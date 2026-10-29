@@ -8,7 +8,7 @@
 
 1. 安装 Release 中的 `lucid-v0.2.0.apk`。需要 Android 12 或更新版本。
 2. 安装并启动 [Shizuku](https://shizuku.rikka.app/download/)，Root 或无线调试启动均可。
-3. 打开 Lucid，点击“授权 / 重新连接”，允许 Shizuku 权限。
+3. 打开 Lucid，点击“连接”，允许 Shizuku 权限。
 4. 先确认 RustDesk 可以远程操作，然后开启“保持清醒”和“让屏幕休息”。
 5. 保持供电。可以离开 App、关闭 App 页面并断开电脑，独立 Shizuku UserService 会继续守护。
 

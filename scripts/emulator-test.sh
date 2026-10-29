@@ -14,6 +14,14 @@ trap finish EXIT
 app_apk="$(find test-apks -name app-debug.apk -print -quit)"
 test_apk="$(find test-apks -name app-debug-androidTest.apk -print -quit)"
 test -n "$app_apk" && test -n "$test_apk"
+release_apk="$(find test-apks -name lucid-v0.2.0.apk -print -quit)"
+if [ -n "$release_apk" ]; then
+  adb install upgrade/panel-awake-v0.1.0.apk
+  adb install -r "$release_apk"
+  adb shell dumpsys package io.github.sh4peshifting.panelawake | grep 'versionName=0.2.0'
+  echo 'UPGRADE_OK: signed v0.1.0 -> signed v0.2.0 without uninstall' | tee emulator-results/upgrade.txt
+  adb uninstall io.github.sh4peshifting.panelawake
+fi
 adb install -r "$app_apk"
 adb install -r "$test_apk"
 adb shell am instrument -w io.github.sh4peshifting.panelawake.test/androidx.test.runner.AndroidJUnitRunner | tee emulator-results/instrumentation.txt

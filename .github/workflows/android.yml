@@ -63,6 +63,7 @@ jobs:
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+            dist/lucid-v0.2.0.apk
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -79,6 +80,10 @@ jobs:
         with:
           name: test-apks
           path: test-apks
+      - name: Download previous version for upgrade verification
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download v0.1.0 --repo Sh4peshifting/Lucid --pattern panel-awake-v0.1.0.apk --dir upgrade
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules

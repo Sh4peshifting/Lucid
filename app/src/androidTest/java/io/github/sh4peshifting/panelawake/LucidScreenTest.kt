@@ -2,6 +2,9 @@ package io.github.sh4peshifting.panelawake
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -49,6 +52,21 @@ class LucidScreenTest {
         compose.runOnIdle { assertEquals(0, restores) }
         compose.onNodeWithText("停止并恢复").performClick()
         compose.runOnIdle { assertEquals(1, restores) }
+    }
+
+    @Test fun controlsRemainAccessibleWithLargeFont() {
+        compose.setContent {
+            val density = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(density.density, fontScale = 1.5f)) {
+                LucidTheme(dynamicColor = false) { LucidScreen(connected, {}, {}, {}, {}) }
+            }
+        }
+        compose.onNodeWithTag("lucid_list").performScrollToNode(hasTestTag("keep_awake"))
+        compose.onNodeWithTag("keep_awake").assertIsDisplayed()
+        compose.onNodeWithTag("lucid_list").performScrollToNode(hasTestTag("panel_off"))
+        compose.onNodeWithTag("panel_off").assertIsDisplayed()
+        compose.onNodeWithTag("lucid_list").performScrollToNode(hasTestTag("restore"))
+        compose.onNodeWithTag("restore").assertIsDisplayed()
     }
 
     @Test fun capturesMaterialThreeLightAndDarkScreens() {
